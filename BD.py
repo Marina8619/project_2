@@ -85,8 +85,62 @@ CREATE TABLE IF NOT EXISTS Documents (
 )
 ''')
 
-# Сохранение изменений и закрытие подключения к базе данных
-conn.commit()
+# Функция для добавления новой категории товаров
+def add_product_category(name):
+    cursor.execute('INSERT INTO ProductCategories (name) VALUES (?)', (name,))
+    conn.commit()
+
+# Функция для добавления новой характеристики товаров
+def add_product_characteristic(name):
+    cursor.execute('INSERT INTO ProductCharacteristics (name) VALUES (?)', (name,))
+    conn.commit()
+
+# Функция для добавления нового товара
+def add_product(category_id, characteristic_id, name, code, expiration_date):
+    cursor.execute('''
+    INSERT INTO Products (category_id, characteristic_id, name, code, expiration_date)
+    VALUES (?, ?, ?, ?, ?)
+    ''', (category_id, characteristic_id, name, code, expiration_date))
+    conn.commit()
+
+# Функция для добавления нового склада
+def add_warehouse(address, name, location_text, location_coordinates):
+    cursor.execute('INSERT INTO Warehouses (address, name, location_text, location_coordinates) VALUES (?, ?, ?, ?)',
+                   (address, name, location_text, location_coordinates))
+    conn.commit()
+
+# Функция для добавления нового клиента
+def add_client(name, contact_info):
+    cursor.execute('INSERT INTO Clients (name, contact_info) VALUES (?, ?)', (name, contact_info))
+    conn.commit()
+
+# Функция для добавления нового заказа
+def add_order(client_id, date):
+    cursor.execute('INSERT INTO Orders (client_id, date) VALUES (?, ?)', (client_id, date))
+    conn.commit()
+
+# Функция для добавления товара в заказ
+def add_order_item(order_id, product_id, quantity):
+    cursor.execute('INSERT INTO OrderItems (order_id, product_id, quantity) VALUES (?, ?, ?)', (order_id, product_id, quantity))
+    conn.commit()
+
+# Функция для добавления нового документа
+def add_document(type, content):
+    cursor.execute('INSERT INTO Documents (type, content) VALUES (?, ?)', (type, content))
+    conn.commit()
+
+# Примеры использования функций для добавления данных
+add_product_category('Электроника')
+add_product_characteristic('Цвет')
+add_product(1, 1, 'Смартфон', 'ABC123', '2023-12-31')
+add_warehouse('Адрес склада', 'Склад №1', 'Расположение', 'Координаты')
+add_client('Иванов Иван', 'Телефон: 123-456, Email: ivanov@example.com')
+add_order(1, '2023-10-02')
+add_order_item(1, 1, 2)
+add_document('Счет', 'Содержание счета...')
+
+# Закрытие подключения к базе данных
 conn.close()
+
 
 print("База данных успешно создана.")
